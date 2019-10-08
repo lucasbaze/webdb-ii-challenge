@@ -12,6 +12,12 @@ router.get('/', async (req, res) => {
 });
 
 //
+//Get specific car
+router.get('/:id', validateID, (req, res) => {
+    res.status(200).json(req.car);
+});
+
+//
 //Create a new car
 router.post('/', async (req, res, next) => {
     let { vin, make, model, milage } = req.body;
@@ -29,5 +35,30 @@ router.post('/', async (req, res, next) => {
         id: newCar,
     });
 });
+
+//
+//Delete Car from inventory
+router.delete('/:id', validateID, async (req, res) => {
+    let { id } = req.params;
+    let deleted = await db('cars')
+        .where('id', id)
+        .del();
+    res.status(200).json(deleted);
+});
+
+//
+//Middleware
+async function validateID(req, res, next) {
+    let { id } = req.params;
+    let validated = await db
+        .select()
+        .table('cars')
+        .where('id', id);
+    if (!validated || validated.length == 0) {
+        next('Not a valid id');
+    }
+    req.car = validated;
+    next();
+}
 
 module.exports = router;
