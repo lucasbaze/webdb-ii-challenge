@@ -12,6 +12,18 @@ router.get('/', async (req, res) => {
 });
 
 //
+//Get cars and sales
+router.get('/sales', async (req, res, next) => {
+    let carSales = await db('cars').join(
+        'sales',
+        'cars.id',
+        '=',
+        'sales.car_id'
+    );
+    res.status(200).json(carSales);
+});
+
+//
 //Get specific car
 router.get('/:id', validateID, (req, res) => {
     res.status(200).json(req.car);
