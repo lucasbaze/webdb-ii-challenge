@@ -16,11 +16,18 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res, next) => {
     let { vin, make, model, milage } = req.body;
 
-    if (!vin || !make || !modal || !milage) {
+    if (!vin || !make || !model || !milage) {
         next('Missing parameter');
     }
 
-    let newCar = await db.table('cars').insert({});
+    let [newCar] = await db.table('cars').insert({ vin, make, model, milage });
+    if (!newCar || newCar == null) {
+        next('Failed to save car. Try again');
+    }
+    res.status(200).json({
+        message: 'Successfully created new car',
+        id: newCar,
+    });
 });
 
 module.exports = router;
