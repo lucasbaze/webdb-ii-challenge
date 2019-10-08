@@ -1,10 +1,12 @@
 const express = require('express');
-const routes = require('./routes');
+const carRoutes = require('./routes/cars');
+const salesRoutes = require('./routes/sales');
 
 const server = express();
 
 server.use(express.json());
-server.use('/cars', routes);
+server.use('/cars', carRoutes);
+server.use('/sales', salesRoutes);
 
 server.get('/', (req, res) => {
     res.send('Server up and running!');
